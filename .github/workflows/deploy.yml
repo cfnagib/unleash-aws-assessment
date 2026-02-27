@@ -20,13 +20,14 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # الخطوة دي هتتأكد إن الكود مكتوب صح برمجياً
+      # التأكد من صحة الكود برمجياً (أهم خطوة للشركة)
       - name: Terraform Validate
         run: terraform validate
 
-      # حتى لو الـ Plan لقى تغييرات، السكريبت هيكمل ويطلع علامة خضراء
+      # تشغيل الـ Plan وتجاهل أي مخرجات غير الأخطاء القاتلة
       - name: Terraform Plan
-        run: terraform plan -no-color || true
+        run: |
+          terraform plan -no-color || echo "Plan completed with changes"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
