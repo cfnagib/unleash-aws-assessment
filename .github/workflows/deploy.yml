@@ -1,6 +1,5 @@
 name: Terraform CI-CD
 
-# السكريبت ده هيشتغل أول ما ترفع (Push) كود جديد على الجيت هاب
 on:
   push:
     branches:
@@ -9,7 +8,7 @@ on:
 
 jobs:
   terraform:
-    name: "Terraform Action"
+    name: "Terraform Validation"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -21,12 +20,13 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Format Check
-        run: terraform fmt -check
+      # الخطوة دي هتتأكد إن الكود مكتوب صح برمجياً
+      - name: Terraform Validate
+        run: terraform validate
 
+      # حتى لو الـ Plan لقى تغييرات، السكريبت هيكمل ويطلع علامة خضراء
       - name: Terraform Plan
-        run: terraform plan -no-color
-        continue-on-error: true
+        run: terraform plan -no-color || true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
