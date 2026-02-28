@@ -49,3 +49,18 @@ resource "aws_lambda_permission" "api_gw" {
   # السطر ده بيربط الإذن بالـ API بتاعنا بالظبط
   source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }
+resource "aws_iam_role_policy" "lambda_sns_policy" {
+  name = "lambda_sns_policy"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "sns:Publish"
+        Effect   = "Allow"
+        Resource = "arn:aws:sns:us-east-1:637226132752:Candidate-Verification-Topic"
+      }
+    ]
+  })
+}
